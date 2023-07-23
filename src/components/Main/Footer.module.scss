@@ -1,0 +1,27 @@
+.image {
+    margin-top: 70px;
+    width: 250px;
+    height: 160px;
+    flex-shrink: 0;
+}
+
+.title {
+    color: var(--title, #101010);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: 'LeferiPoint-BlackA';
+    margin-top: 5px;
+    margin-bottom: 30px;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 35px; /* 100% */
+    letter-spacing: -0.9px;
+}
+
+.color {
+    color: #FFC93C;;
+}
+
