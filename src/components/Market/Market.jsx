@@ -4,7 +4,7 @@ import styles from "./Market.module.scss";
 function Market() {
   return (
     <div className={styles.layout}>
-      <div className={styles.title}>푸드리퍼브 재료를 <br/>판매하는 마켓이에요</div>
+      <div className={styles.title}>푸드리퍼브 재 료를 <br/>판매하는 마켓이에요</div>
 
       <div className={styles.cafeContainer}>
           <div className={styles.cafeList}>
