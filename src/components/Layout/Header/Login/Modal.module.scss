@@ -1,0 +1,61 @@
+.modal{
+    display:flexbox;
+    width: 340px;
+    height: 230px;
+    padding: 24px 31px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: 16px;
+    background: #FFF;
+}
+
+.logo {
+    width: 35%;
+    height: initial;
+    flex-shrink: 0;
+}
+
+.subText {
+    color: var(--email, #9F9F9F);
+    text-align: center;
+    font-family: 'SUIT-Regular';
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 100;
+    line-height: 18px; /* 128.571% */
+    letter-spacing: -0.7px;
+    margin-bottom: 10px;
+}
+
+.mainText {
+    color: #4F4F4F;
+    text-align: center;
+    font-family: 'LeferiPoint-BlackA';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: -0.8px;
+    margin-bottom: 10px;
+}
+
+.naverButton {
+    display: inline-flex;
+    padding: 12px 70px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border-radius: 42px;
+    background: #03CF5D;
+    box-shadow: 0px 4px 8px 2px rgba(0, 0, 0, 0.13);
+    color: #FFF;
+    text-align: center;
+    font-family: 'SUIT-Regular';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px; /* 128.571% */
+    letter-spacing: -0.7px;
+    border : none;
+}
