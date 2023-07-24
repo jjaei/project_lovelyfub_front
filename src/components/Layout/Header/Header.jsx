@@ -23,7 +23,7 @@ function Header(){
         <header className={styles.header}>
             <div className={styles.contents}>
                 <div className={styles.logo}>
-                    <img src="logo.png" className={styles.logo}/>
+                    <img src={`${process.env.PUBLIC_URL}/logo.png`} className={styles.logo}/>
                 </div>
 
                 <nav className={styles.navigation}>

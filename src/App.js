@@ -10,13 +10,13 @@ import Userpage from './pages/Userpage'
 function App() {
   return (
     <div className="App">
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <Routes>
           <Route path='/main' element={<Mainpage/>} />
           <Route path='/market' element={<Marketpage/>}/>
           <Route path='/cafe' element={<Cafepage/>}/>
           <Route path='/map' element={<Mappage/>}/>
-          <Route path='/user' element={<Userpage/>}>
+          <Route path='/user/mypage' element={<Userpage/>}>
           </Route>
         </Routes>
       </Router>
