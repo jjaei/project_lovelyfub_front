@@ -39,7 +39,7 @@ function User(){
                 <div className={styles.wishTitle}>내가 찜한 착한 가게</div>
                 </div>
                 <div className={styles.notWishContainer}>
-                <img src="nonwish.png" className={styles.notWishImage} />
+                <img src={process.env.PUBLIC_URL + "/nonwish.png"} className={styles.notWishImage} />
                 <div className={styles.notWishText}>아직 찜한 가게가 없어요<br/><span className={styles.notWishText2}>착한 가게를 찾아볼까요?</span></div>
                 <button onClick={handleClick}className={styles.button}>내 주변 가게 찾기</button>
                 </div>
