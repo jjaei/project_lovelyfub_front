@@ -1,5 +1,7 @@
 .modal{
     display:flexbox;
+    position: relative;
+    z-index: 101;
     width: 340px;
     height: 230px;
     padding: 24px 31px;

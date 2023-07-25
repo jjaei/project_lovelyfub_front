@@ -1,13 +1,14 @@
 import React from 'react';
 import Layout from '../components/Layout/layout';
 import Map from '../components/Map/Map';
+import MapList from '../components/Map/MapList';
 
 function Mappage(){
     return (
         <>
             <Layout>
                 <Map/>
-                <div>유저페이지</div>
+                <MapList/>
             </Layout>
         </>
     )

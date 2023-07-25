@@ -43,4 +43,3 @@ function Header(){
 }
 
 export default Header
-{/* 근데 로그인을 누르면 팝업이 뜨는 거긴 한데? 흠 */}
