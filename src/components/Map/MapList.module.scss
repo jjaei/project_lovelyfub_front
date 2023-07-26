@@ -1,14 +1,14 @@
 .layout {
     width: 100%;
-    height: 382px;
+    height: auto; /* 필요에 따라 높이 조정 또는 삭제 */
     flex-shrink: 0;
     border-radius: 16px 16px 0px 0px;
     background: #FFF;
     padding-top: 20px;
     position: relative;
-}
-
-.title {
+  }
+  
+  .title {
     text-align: left;
     height: 23px;
     flex-direction: column;
@@ -21,27 +21,31 @@
     font-weight: 700;
     line-height: 22px; /* 122.222% */
     letter-spacing: -1.26px;
-    margin: 24px;
-}
-
-.cafeContainer {
+    margin: 24px; /* 필요에 따라 마진 조정 */
+  }
+  
+  .cafeContainer {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 두 개의 열을 만듭니다. */
-    //gap: 20px; /* 각 요소 사이의 간격을 설정합니다. */
-}
-
-.cafeList {
-    //display: flexbox;
-    padding-bottom: 30px;
-    width: 85%;
-    height:80%;
+    grid-template-columns: repeat(5, 1fr); /* 한 개의 행을 만듭니다. */
+    gap: 20px; /* 각 요소 사이의 간격을 설정합니다. */
+    width: 100%;
     margin: 20px;
-    //flex-shrink: 0;
+    height: auto; /* 필요에 따라 높이 조정 또는 삭제 */
+    overflow-x: scroll; /* 스크롤을 좌우로 움직이도록 설정합니다. */
+    overflow-y: hidden; /* 상하 스크롤을 숨깁니다. */
+    ::-webkit-scrollbar {
+      display: none; /* 스크롤바를 숨깁니다. */
+    }
+  }
+  
+  .cafeList {
+    display: inline-block; /* 카드 요소를 인라인 블록으로 설정합니다. */
+    width: 230px; /* 카드의 너비를 설정해주세요. */
+    margin-bottom: 20px; /* 카드들 사이의 간격을 조정 */
     border-radius: 20px;
     background: #FFF;
     box-shadow: 0px 4px 8px 2px rgba(0, 0, 0, 0.06);
-    //margin-bottom: 30px;
-}
+  }
 
 .productImage {
     text-align: center;

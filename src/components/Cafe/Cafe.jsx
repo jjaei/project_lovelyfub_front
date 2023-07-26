@@ -6,12 +6,19 @@ import CafeModal from "./CafeModal"; // CafeModal 컴포넌트를 불러옵니�
 function Cafe() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [heartOnOff, setHeartOnOff] = useState(false);
+  const [cafes, setCafes] = useState([]);
+  
 
   const mapElement = useRef(null);
   const mapInstance = useRef(null);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+  };
+
+  const toggleHeart = () => {
+    setHeartOnOff(!heartOnOff);
   };
 
   useEffect(() => {
@@ -88,7 +95,7 @@ function Cafe() {
         </div>
 
       {isModalOpen && (
-        <CafeModal closeModal={toggleModal} mapInstance={mapInstance} toggleModal={toggleModal} />
+        <CafeModal closeModal={toggleModal} mapInstance={mapInstance} toggleModal={toggleModal} heartOnOff={heartOnOff} toggleHeart={toggleHeart} />
       )}
     </div>
   );

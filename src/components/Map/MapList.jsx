@@ -24,6 +24,17 @@ function MapList() {
             푸드리퍼브 식재료를 판매하는<br />떠오르는 트렌디한 상점
           </div>
         </div>
+
+        {/* Cafe List 3 */}
+        <div className={styles.cafeList}>
+          <img src="market.jpg" className={styles.productImage} />
+          <div className={styles.productTitle}>홈마켓</div>
+          <div className={styles.productText}>
+            푸드리퍼브 식재료를 판매하는<br />떠오르는 트렌디한 상점
+          </div>
+        </div>
+
+        
       </div>
     </div>
   );
