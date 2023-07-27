@@ -1,25 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./Cafe.module.scss";
-import { useEffect, useRef } from 'react';
-import CafeModal from "./CafeModal"; // CafeModal 컴포넌트를 불러옵니다.
+import CafeModal from "./CafeModal";
+import axios from "axios";
 
 function Cafe() {
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [heartOnOff, setHeartOnOff] = useState(false);
   const [cafes, setCafes] = useState([]);
-  
 
   const mapElement = useRef(null);
   const mapInstance = useRef(null);
+  const [selectedCafe, setSelectedCafe] = useState(null);
 
-  const toggleModal = () => {
+  const toggleModal = (cafe) => {
+    setSelectedCafe(cafe);
     setIsModalOpen(!isModalOpen);
   };
+  
 
   const toggleHeart = () => {
     setHeartOnOff(!heartOnOff);
   };
+
+  useEffect(() => {
+    axios
+      .get("http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/cafe?page=1&size=30")
+      .then((response) => {
+        const extractedCafes = response.data.data.map((cafe) => {
+          return {
+            id: cafe.storeid,
+            name: cafe.name,
+            profile: cafe.profile,
+            description: cafe.introduction,
+            // Add other necessary fields as needed
+          };
+        });
+        setCafes(extractedCafes);
+      })
+      .catch((error) => console.error("Error fetching cafes:", error));
+  }, []);
 
   useEffect(() => {
     const { naver } = window;
@@ -59,43 +78,27 @@ function Cafe() {
 
   return (
     <div className={styles.layout}>
-      <div className={styles.title}>푸드리퍼브 재료로<br/>음식을 만드는 식당이에요</div>
+      <div className={styles.title}>푸드리퍼브 재료로<br />음식을 만드는 식당이에요</div>
 
       <div className={styles.cafeContainer}>
-          <div className={styles.cafeList} onClick={toggleModal}>
-            <img src="product.jpg" className={styles.productImage} />
-            <div className={styles.productTitle}>소일 보울앤부즈</div>
-            <div className={styles.productText}>푸드리퍼브 식재료로 만드는<br/>캐주얼 다이닝 레스토랑</div>
+        {cafes.map((cafe) => (
+          <div key={cafe.id} className={styles.cafeList} onClick={() => toggleModal(cafe)}>
+            <img src={`/푸드리퍼브 가게 프로필/${cafe.profile}`} className={styles.productImage} />
+            <div className={styles.productTitle}>{cafe.name}</div>
+            <div className={styles.productText}>{cafe.description}</div>
           </div>
-          <div className={styles.cafeList} onClick={toggleModal}>
-            <img src="product.jpg" className={styles.productImage} />
-            <div className={styles.productTitle}>소일 보울앤부즈</div>
-            <div className={styles.productText}>푸드리퍼브 식재료로 만드는<br/>캐주얼 다이닝 레스토랑</div>
-          </div>
-          <div className={styles.cafeList} onClick={toggleModal}>
-            <img src="product.jpg" className={styles.productImage} />
-            <div className={styles.productTitle}>소일 보울앤부즈</div>
-            <div className={styles.productText}>푸드리퍼브 식재료로 만드는<br/>캐주얼 다이닝 레스토랑</div>
-          </div>
-          <div className={styles.cafeList} onClick={toggleModal}>
-            <img src="product.jpg" className={styles.productImage} />
-            <div className={styles.productTitle}>소일 보울앤부즈</div>
-            <div className={styles.productText}>푸드리퍼브 식재료로 만드는<br/>캐주얼 다이닝 레스토랑</div>
-          </div>
-          <div className={styles.cafeList} onClick={toggleModal}>
-            <img src="product.jpg" className={styles.productImage} />
-            <div className={styles.productTitle}>소일 보울앤부즈</div>
-            <div className={styles.productText}>푸드리퍼브 식재료로 만드는<br/>캐주얼 다이닝 레스토랑</div>
-          </div>
-          <div className={styles.cafeList} onClick={toggleModal}>
-            <img src="product.jpg" className={styles.productImage} />
-            <div className={styles.productTitle}>소일 보울앤부즈</div>
-            <div className={styles.productText}>푸드리퍼브 식재료로 만드는<br/>캐주얼 다이닝 레스토랑</div>
-          </div>
-        </div>
+        ))}
+      </div>
 
       {isModalOpen && (
-        <CafeModal closeModal={toggleModal} mapInstance={mapInstance} toggleModal={toggleModal} heartOnOff={heartOnOff} toggleHeart={toggleHeart} />
+        <CafeModal
+          closeModal={toggleModal}
+          mapInstance={mapInstance}
+          toggleModal={toggleModal}
+          heartOnOff={heartOnOff}
+          toggleHeart={toggleHeart}
+          cafe={selectedCafe}
+        />
       )}
     </div>
   );
