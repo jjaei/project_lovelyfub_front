@@ -24,7 +24,14 @@ function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnO
       const { naver } = window;
       if (!naver || !mapElement.current) return;
 
-      const location = new naver.maps.LatLng(37.5656, 126.9769);
+      let location;
+      if (cafe) {
+        const { latitude, longitude } = cafe;
+        location = new naver.maps.LatLng(latitude, longitude);
+      } else {
+        location = new naver.maps.LatLng(37.5656, 126.9769);
+      }
+    
       const mapOptions = {
         center: location,
         zoom: 17,
@@ -48,26 +55,6 @@ function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnO
     }
   }, [toggleModal]);
 
-const handleMapClick = () => {
-  if (userLocation) {
-    const cafeLocation = new window.naver.maps.LatLng(37.5656, 126.9769); // 카페의 실제 위치로 변경해주세요
-
-    // 출발지를 현재 위치로 지정
-    const startPosition = `${userLocation.lng()},${userLocation.lat()}`;
-
-    // 도착지를 카페 위치로 지정
-    const destinationPosition = `${cafeLocation.lng()},${cafeLocation.lat()}`;
-
-    // Naver Map의 길찾기 서비스를 위한 URL 생성
-    const naverMapURL = `https://m.map.naver.com/directions/?s=${startPosition}&d=${destinationPosition}&dlevel=13&enc=b64`;
-
-    // URL을 새 탭에서 열기
-    window.open(naverMapURL, "_blank");
-  } else {
-    alert("사용자 위치를 가져올 수 없습니다.");
-  }
-};
-
 
   useEffect(() => {
     // Get user's current location
@@ -82,8 +69,7 @@ const handleMapClick = () => {
           // Handle error if user location cannot be obtained
         }
       );
-    } 
-    else {
+    } else {
       console.error("Geolocation is not supported by this browser.");
       // Handle the case where geolocation is not supported
     }
@@ -92,14 +78,59 @@ const handleMapClick = () => {
   useEffect(() => {
     // cafe 데이터가 유효한 경우에만 실행
     if (cafe) {
-      // 이미지를 서버에서 불러오는 경우 예시
-      // 이미지 경로를 적절하게 수정해주세요.
       const imageURL = `/푸드리퍼브 가게 프로필/${cafe.profile}`;
       // cafe 정보 업데이트
       setModalImage(imageURL);
-      // 나머지 필요한 정보도 같은 방식으로 업데이트합니다.
     }
   }, [cafe]);
+
+  useEffect(() => {
+    // cafe 데이터가 유효한 경우에만 실행
+    if (cafe && mapInstanceRef.current) {
+      // cafe의 위치 정보를 가져옵니다.
+      const { latitude, longitude } = cafe;
+      const cafeLocation = new window.naver.maps.LatLng(latitude, longitude);
+
+      // 기존 마커를 삭제합니다.
+      if (mapInstanceRef.current.markers && mapInstanceRef.current.markers.length > 0) {
+        mapInstanceRef.current.markers.forEach((marker) => {
+          marker.setMap(null);
+        });
+      }
+
+      // 새로운 마커를 생성하여 지도에 표시합니다.
+      const marker = new window.naver.maps.Marker({
+        position: cafeLocation,
+        map: mapInstanceRef.current,
+      });
+
+      // 새로운 마커를 markers 배열에 추가합니다.
+      mapInstanceRef.current.markers = [marker];
+
+      // 지도 중심을 마커 위치로 이동합니다.
+      mapInstanceRef.current.setCenter(cafeLocation);
+    }
+  }, [cafe]);
+
+  const handleMapClick = () => {
+    if (cafe) {
+      const cafeLocation = new window.naver.maps.LatLng(cafe.latitude, cafe.longitude);
+  
+      // 도착지를 카페 위치로 지정
+      const destinationPosition = `${cafeLocation.lng()},${cafeLocation.lat()}`;
+  
+      // Naver Map의 길찾기 서비스를 위한 URL 생성
+      const naverMapURL = `https://m.map.naver.com/directions/?sposition=&dposition=${destinationPosition}&dlevel=13`;
+  
+      // URL을 새 탭에서 열기
+      window.open(naverMapURL, "_blank");
+    } else {
+      alert("카페 위치를 가져올 수 없습니다.");
+    }
+  };
+  
+  
+  
 
     return (
     <div className={styles.modalBackdrop}>

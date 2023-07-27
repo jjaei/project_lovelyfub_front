@@ -7,17 +7,42 @@ function Market() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [heartOnOff, setHeartOnOff] = useState(false);
   const [market, setMarket] = useState([]);
+  const [userLocation, setUserLocation] = useState(null);
+
 
   const mapElement = useRef(null);
   const mapInstance = useRef(null);
+  const [selectedMarket, setSelectedMarket] = useState(null);
 
-  const toggleModal = () => {
+
+  const toggleModal = (market) => {
+    setSelectedMarket(market);
     setIsModalOpen(!isModalOpen);
   };
 
   const toggleHeart = () => {
     setHeartOnOff(!heartOnOff);
   };
+
+  useEffect(() => {
+    // Get user's current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation(new window.naver.maps.LatLng(latitude, longitude));
+        },
+        (error) => {
+          console.error("Error getting user location:", error);
+          // Handle error if user location cannot be obtained
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+      // Handle the case where geolocation is not supported
+    }
+  }, []);
+
 
   useEffect(() => {
     axios
@@ -73,13 +98,23 @@ function Market() {
     };
   }, []);
 
+  const handleMarketClick = (marketId) => {
+    axios
+      .get(`http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/store/${marketId}`)
+      .then((response) => {
+        setSelectedMarket(response.data);
+        setIsModalOpen(true);
+      })
+      .catch((error) => console.error("Error fetching market:", error));
+  };
+
   return (
     <div className={styles.layout}>
       <div className={styles.title}>푸드리퍼브 재료를<br />판매하는 마켓이에요</div>
 
       <div className={styles.cafeContainer}>
         {market.map((market) => (
-          <div key={market.id} className={styles.cafeList} onClick={toggleModal}>
+          <div key={market.id} className={styles.cafeList} onClick={() => handleMarketClick(market.id)}>
             <img src={`/푸드리퍼브 가게 프로필/${market.profile}`} className={styles.productImage} />
             <div className={styles.productTitle}>{market.name}</div>
             <div className={styles.productText}>{market.description}</div>
@@ -94,6 +129,7 @@ function Market() {
           toggleModal={toggleModal}
           heartOnOff={heartOnOff}
           toggleHeart={toggleHeart}
+          market={selectedMarket}
         />
       )}
     </div>
