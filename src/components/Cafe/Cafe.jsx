@@ -76,13 +76,23 @@ function Cafe() {
     };
   }, []);
 
+  const handleCafeClick = (cafeId) => {
+    axios
+      .get(`http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/store/${cafeId}`)
+      .then((response) => {
+        setSelectedCafe(response.data);
+        setIsModalOpen(true);
+      })
+      .catch((error) => console.error("Error fetching cafe:", error));
+  };
+
   return (
     <div className={styles.layout}>
       <div className={styles.title}>푸드리퍼브 재료로<br />음식을 만드는 식당이에요</div>
 
       <div className={styles.cafeContainer}>
         {cafes.map((cafe) => (
-          <div key={cafe.id} className={styles.cafeList} onClick={() => toggleModal(cafe)}>
+          <div key={cafe.id} className={styles.cafeList} onClick={() => handleCafeClick(cafe.id)}>
             <img src={`/푸드리퍼브 가게 프로필/${cafe.profile}`} className={styles.productImage} />
             <div className={styles.productTitle}>{cafe.name}</div>
             <div className={styles.productText}>{cafe.description}</div>

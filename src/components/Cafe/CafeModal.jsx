@@ -5,6 +5,7 @@ function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnO
   const mapElement = useRef(null);
   const mapInstanceRef = useRef(null); // Separate ref for the map instance
   const [userLocation, setUserLocation] = useState(null);
+  const [modalImage, setModalImage] = useState("");
 
   // Function to toggle the heart icon state
   const heartOnOffHandler = () => {
@@ -81,11 +82,24 @@ const handleMapClick = () => {
           // Handle error if user location cannot be obtained
         }
       );
-    } else {
+    } 
+    else {
       console.error("Geolocation is not supported by this browser.");
       // Handle the case where geolocation is not supported
     }
   }, []);
+
+  useEffect(() => {
+    // cafe 데이터가 유효한 경우에만 실행
+    if (cafe) {
+      // 이미지를 서버에서 불러오는 경우 예시
+      // 이미지 경로를 적절하게 수정해주세요.
+      const imageURL = `/푸드리퍼브 가게 프로필/${cafe.profile}`;
+      // cafe 정보 업데이트
+      setModalImage(imageURL);
+      // 나머지 필요한 정보도 같은 방식으로 업데이트합니다.
+    }
+  }, [cafe]);
 
     return (
     <div className={styles.modalBackdrop}>
@@ -109,23 +123,24 @@ const handleMapClick = () => {
             </span>
 
         {/*모달창 내용*/}
-        <img src={"product.jpg"} className={styles.modalImage} />
+        <img src={modalImage} className={styles.modalImage} />
             
-            <div className={styles.modalTitle}>{cafe.name}</div>
+            <div className={styles.modalTitle}>{cafe?.name}</div>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" className={styles.subIcon}>
               <path d="M15.8033 14.6455L14.7809 15.6442C14.0273 16.3747 13.0496 17.3139 11.8472 18.4619C11.096 19.1794 9.90404 19.1793 9.15286 18.4618L6.14579 15.5728C5.76786 15.2063 5.45152 14.8972 5.1967 14.6455C2.26777 11.7527 2.26777 7.06246 5.1967 4.16963C8.12562 1.27679 12.8744 1.27679 15.8033 4.16963C18.7322 7.06246 18.7322 11.7527 15.8033 14.6455ZM12.6535 9.64128C12.6535 8.46655 11.6894 7.51426 10.5 7.51426C9.31066 7.51426 8.34646 8.46655 8.34646 9.64128C8.34646 10.816 9.31066 11.7683 10.5 11.7683C11.6894 11.7683 12.6535 10.816 12.6535 9.64128Z" fill="#D9D9D9"/>
             </svg>
-            <div className={styles.location}>{cafe.address}</div>
+            <div className={styles.location}>{cafe?.address}</div>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" className={styles.subIcon}>
               <path d="M7.02535 2.37314L7.94814 2.08073C8.81284 1.80673 9.73667 2.24954 10.107 3.11547L10.8439 4.83872C11.1651 5.58965 10.9869 6.47273 10.4034 7.02193L8.77968 8.55024C8.87986 9.46436 9.18973 10.3645 9.70924 11.2507C10.2288 12.1368 10.8777 12.8719 11.6559 13.456L13.6061 12.8111C14.3453 12.5666 15.1503 12.8475 15.6037 13.5082L16.66 15.0471C17.1871 15.815 17.0923 16.8744 16.4382 17.5255L15.7374 18.2233C15.0397 18.9178 14.0433 19.1698 13.1215 18.8847C10.9453 18.2115 8.9445 16.2129 7.11898 12.8891C5.2908 9.56033 4.64559 6.73611 5.18333 4.41646C5.40962 3.44038 6.11034 2.66308 7.02535 2.37314Z" fill="#D9D9D9"/>
             </svg>
-            <div className={styles.location}>{cafe.number}</div>
+            <div className={styles.location}>{cafe?.number}</div>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" className={styles.subIcon}>
               <rect x="4.5" y="4.5" width="15" height="15" rx="3.5" fill="#D9D9D9" stroke="#D9D9D9"/>
               <circle cx="12" cy="12" r="3.5" stroke="white"/>
               <circle cx="16" cy="8" r="1" fill="white"/>
             </svg>
-            <div className={styles.location}><a href={cafe.instagram}></a></div>
+            <div className={styles.instaLink}>
+            <a href={cafe?.instagram}  target="_blank" rel="noopener noreferrer" >{cafe.instagram}</a></div>
 
         {/*모달창 지도*/}
         <div ref={mapElement} className={styles.mapLayout}  onClick={handleMapClick}/>
