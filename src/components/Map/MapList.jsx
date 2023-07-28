@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./MapList.module.scss";
-import CafeModal from "../Cafe/CafeModal"; // CafeModal 컴포넌트를 import합니다.
+import MapModal from "./MapModal";
+import axios from "axios";
 
 function MapList({ restaurantList }) {
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [heartOnOff, setHeartOnOff] = useState(false);
+  const mapInstance = useRef(null);
 
   // CafeModal을 열고 닫는 함수를 정의합니다.
   const toggleModal = (restaurant) => {
@@ -12,37 +15,60 @@ function MapList({ restaurantList }) {
     setIsModalOpen(!isModalOpen);
   };
 
+  const handleCafeClick = (cafeId) => {
+    axios
+      .get(`http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/store/${cafeId}`)
+      .then((response) => {
+        setSelectedRestaurant(response.data);
+        setIsModalOpen(true);
+      })
+      .catch((error) => console.error("Error fetching cafe:", error));
+  };
+  
+
+  const toggleHeart = () => {
+    setHeartOnOff(!heartOnOff);
+  };
+
   if (!restaurantList) {
-    // 만약 restaurantList가 undefined이거나 null이라면 로딩 상태를 표시하거나 상황에 맞게 처리합니다.
-    return <div className={styles.title}>주변 가게가 존재하지 않습니다.</div>;
+    // restaurantList가 undefined인 경우 로딩 상태를 표시하거나 원하는 처리를 추가합니다.
+    return <div className={styles.loading}>데이터를 로딩 중입니다...</div>;
   }
 
   return (
     <div className={styles.layout}>
       <div className={styles.title}>지금 내 주변에 있는 가게 모음</div>
-
-      <div className={styles.cafeContainer}>
-        {restaurantList.map((restaurant) => (
-          <div
-            className={styles.cafeList}
-            key={restaurant.storeid}
-            onClick={() => toggleModal(restaurant)} // 클릭 이벤트를 추가하여 toggleModal 함수를 호출합니다.
-          >
-            <img
-              src={restaurant.profile}
-              className={styles.productImage}
-              alt={restaurant.name}
-            />
-            <div className={styles.productTitle}>{restaurant.name}</div>
-            <div className={styles.productText}>{restaurant.introduction}</div>
-          </div>
-        ))}
-      </div>
-
-      {isModalOpen && selectedRestaurant && ( // isModalOpen과 선택된 가게 정보가 있는 경우에만 CafeModal을 렌더링합니다.
-        <CafeModal
-          closeModal={() => setIsModalOpen(false)}
-          restaurant={selectedRestaurant}
+  
+      {restaurantList.length > 0 ? (
+        <div className={styles.cafeContainer}>
+          {restaurantList.map((restaurant) => (
+            <div
+              className={styles.cafeList}
+              key={restaurant.storeid}
+              onClick={() => handleCafeClick(restaurant.storeid)}
+            >
+              <img
+                src={`/푸드리퍼브 가게 프로필/${restaurant.profile}`}
+                className={styles.productImage}
+                alt={restaurant.name}
+              />
+              <div className={styles.productTitle}>{restaurant.name}</div>
+              <div className={styles.productText}>{restaurant.introduction}</div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className={styles.nonStore}>주변 가게가 존재하지 않습니다.</div>
+      )}
+  
+      {isModalOpen && (
+        <MapModal
+        closeModal={toggleModal}
+        mapInstance={mapInstance}
+        toggleModal={toggleModal}
+        heartOnOff={heartOnOff}
+        toggleHeart={toggleHeart}
+        cafe={selectedRestaurant}
         />
       )}
     </div>

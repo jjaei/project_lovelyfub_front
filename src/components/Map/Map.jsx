@@ -5,27 +5,14 @@ import MapList from "./MapList";
 function Map() {
   const mapElement = useRef(null);
   const { naver } = window;
-  const [myLocation, setMyLocation] = useState(null);
+  const [myLocation] = useState({
+    latitude: 37.5119,
+    longitude: 126.935
+  });
   const [restaurantList, setRestaurantList] = useState([]);
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setMyLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      }, (error) => {
-        console.error("Error getting user location:", error);
-        window.alert("현재 위치를 가져올 수 없습니다.");
-      });
-    } else {
-      window.alert("현재 위치를 알 수 없습니다.");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (myLocation && mapElement.current) {
+    if (mapElement.current) {
       const currentPosition = [myLocation.latitude, myLocation.longitude];
 
       const map = new naver.maps.Map(mapElement.current, {
@@ -37,9 +24,10 @@ function Map() {
         position: new naver.maps.LatLng(currentPosition[0], currentPosition[1]),
         map,
       });
+
       fetchRestaurants(myLocation.latitude, myLocation.longitude);
     }
-  }, [myLocation]); // 의존성 배열에서 myLocation을 포함시켜 최초 한 번만 실행되도록 수정
+  }, []);
 
   const fetchRestaurants = async (latitude, longitude) => {
     try {

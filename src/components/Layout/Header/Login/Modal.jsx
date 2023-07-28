@@ -19,7 +19,7 @@ const Modal = forwardRef((props, ref) => {
 
     function handleNaverLogin() {
         // 백엔드 API의 네이버 로그인 URL로 리다이렉션합니다.
-        window.location.href = "http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/login";
+        window.location.href = "http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver";
     }
 
     return (

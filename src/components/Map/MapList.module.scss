@@ -23,6 +23,24 @@
     letter-spacing: -1.26px;
     margin: 24px; /* 필요에 따라 마진 조정 */
   }
+
+  .nonStore {
+    text-align: left;
+    height: 25px;
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--title, #101010);
+    font-family: 'LeferiPoint-BlackA';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 22px; /* 122.222% */
+    letter-spacing: -1.26px; 
+    padding: 24px;/* 필요에 따라 마진 조정 */
+    background-color: #fff;
+    padding-top: 10px;
+  }
   
   .cafeContainer {
     display: grid;
