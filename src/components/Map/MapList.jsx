@@ -32,7 +32,7 @@ function MapList({ restaurantList }) {
 
   if (!restaurantList) {
     // restaurantList가 undefined인 경우 로딩 상태를 표시하거나 원하는 처리를 추가합니다.
-    return <div className={styles.loading}>데이터를 로딩 중입니다...</div>;
+    return <div className={styles.loading}></div>;
   }
 
   return (
