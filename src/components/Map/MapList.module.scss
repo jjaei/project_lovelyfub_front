@@ -1,0 +1,102 @@
+.layout {
+    width: 100%;
+    height: auto; /* 필요에 따라 높이 조정 또는 삭제 */
+    flex-shrink: 0;
+    border-radius: 16px 16px 0px 0px;
+    background: #FFF;
+    padding-top: 20px;
+    position: relative;
+  }
+  
+  .title {
+    text-align: left;
+    height: 23px;
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--title, #101010);
+    font-family: 'LeferiPoint-BlackA';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 22px; /* 122.222% */
+    letter-spacing: -1.26px;
+    margin: 24px; /* 필요에 따라 마진 조정 */
+  }
+
+  .nonStore {
+    text-align: left;
+    height: 25px;
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--title, #101010);
+    font-family: 'LeferiPoint-BlackA';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 22px; /* 122.222% */
+    letter-spacing: -1.26px; 
+    padding: 24px;/* 필요에 따라 마진 조정 */
+    background-color: #fff;
+    padding-top: 10px;
+  }
+  
+  .cafeContainer {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 한 개의 행을 만듭니다. */
+    gap: 20px; /* 각 요소 사이의 간격을 설정합니다. */
+    width: 100%;
+    margin: 20px;
+    height: auto; /* 필요에 따라 높이 조정 또는 삭제 */
+    overflow-x: scroll; /* 스크롤을 좌우로 움직이도록 설정합니다. */
+    overflow-y: hidden; /* 상하 스크롤을 숨깁니다. */
+    ::-webkit-scrollbar {
+      display: none; /* 스크롤바를 숨깁니다. */
+    }
+  }
+  
+  .cafeList {
+    display: inline-block; /* 카드 요소를 인라인 블록으로 설정합니다. */
+    width: 230px; /* 카드의 너비를 설정해주세요. */
+    margin-bottom: 20px; /* 카드들 사이의 간격을 조정 */
+    padding-bottom: 20px;
+    border-radius: 20px;
+    background: #FFF;
+    box-shadow: 0px 4px 8px 2px rgba(0, 0, 0, 0.06);
+  }
+
+.productImage {
+    text-align: center;
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.productTitle {
+    color: var(--title, #101010);
+    text-align: center;
+    font-family: 'LeferiPoint-BlackA';
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 18px;
+    letter-spacing: -1.12px;
+    text-align: left;
+    margin: 10px;
+}
+
+.productText {
+    color: var(--main-txt, #737373);
+    font-family: 'SUIT-Regular';
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: -0.84px;
+    text-align: left;
+    margin-left: 10px;
+}
