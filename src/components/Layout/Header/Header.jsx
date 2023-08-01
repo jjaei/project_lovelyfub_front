@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styles from './Header.module.scss';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Modal from './Login/Modal';
+import { LoginContext } from './Login/LoginContext';
 
 function Header() {
   const movePage = useNavigate();
   const [modalState, setModalState] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userData, setUserData] = useState(null); // 유저 정보를 저장할 상태 추가
+  const { isLoggedIn, setIsLoggedIn, userData, setUserData } = useContext(LoginContext);
 
   useEffect(() => {
     checkLoginStatus();
@@ -59,12 +59,33 @@ function Header() {
     setModalState(!modalState);
   }
 
-  function handleLoginSuccess() {
+  function handleLoginSuccess(userData) {
+    // 로그인 성공 시 세션 스토리지에 로그인 상태와 사용자 정보를 저장합니다.
+    sessionStorage.setItem('isLoggedIn', 'true');
+    sessionStorage.setItem('userData', JSON.stringify(userData));
+  
     setModalState(false); // 로그인 모달을 닫습니다.
-    checkLoginStatus(); // 로그인 상태를 다시 확인합니다.
+    setIsLoggedIn(true); // 로그인 상태로 변경합니다.
+    setUserData(userData); // 사용자 정보를 설정합니다.
   }
 
-  // 추가: 유저 페이지로 이동하는 함수
+  useEffect(() => {
+    // 세션 스토리지에서 로그인 상태를 불러옵니다.
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+    setIsLoggedIn(isLoggedIn);
+  
+    // 세션 스토리지에서 사용자 정보를 불러옵니다.
+    const storedUserData = sessionStorage.getItem('userData');
+    if (storedUserData) {
+      const userData = JSON.parse(storedUserData);
+      setUserData(userData);
+    }
+  
+  }, []);
+  
+  
+
+  // 추가: 유저 페이지로 이동
   function handleUserPageClick() {
     movePage('/user/mypage');
   }

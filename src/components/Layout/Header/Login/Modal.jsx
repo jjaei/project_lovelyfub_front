@@ -19,9 +19,12 @@ const Modal = forwardRef((props, ref) => {
 
     function handleNaverLogin() {
         // 네이버 로그인 페이지로 이동
-        window.location.href = "http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver";
-        props.onLoginSuccess();
-    }
+        //window.location.href = "http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver";
+        // 로그인 성공 시 콜백 함수를 호출하여 상태를 변경합니다.
+        props.onLoginSuccess({
+        });
+      }
+      
 
     return (
         <div ref={wrapperRef}>

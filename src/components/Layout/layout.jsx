@@ -7,7 +7,6 @@ const Layout = (props) =>{
     return (
         <div className={styles.layout}>
             <div className={styles.content}>
-                <Header/>
                 <Menu />
             </div>
             
