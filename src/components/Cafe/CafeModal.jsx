@@ -1,15 +1,49 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./Cafe.module.scss";
 
-function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnOff, cafe }) {
+function CafeModal({ closeModal, mapInstance,  cafe, isModalOpen }) {
   const mapElement = useRef(null);
   const mapInstanceRef = useRef(null); // Separate ref for the map instance
+  const [heartOnOff, setHeartOnOff] = useState(false);
+  const [wishCount, setWishCount] = useState(808);
   const [userLocation, setUserLocation] = useState(null);
   const [modalImage, setModalImage] = useState("");
 
   // Function to toggle the heart icon state
   const heartOnOffHandler = () => {
     toggleHeart();
+    const storeId = cafe.storeid;
+
+    if (!heartOnOff) {
+      setWishCount(wishCount +1)
+      fetch("http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/likes", {
+        method: "POST",
+        headers : {
+          "Content-Type" : "application/json",
+        },
+        body: JSON.stringify({
+          userid: 2,
+          storeid: storeId, 
+        })
+      })
+    } else if (heartOnOff) {
+      setWishCount(wishCount -1)
+      fetch(`http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/likes/2/${storeId}`, {
+        method: "DELETE", 
+        body: JSON.stringify({
+          user_id: 2,
+          product_id: storeId,
+        }),
+      });
+    }
+  };
+
+  const handleCloseModal = () => {
+    closeModal();
+  }
+
+  const toggleHeart = () => {
+    setHeartOnOff(!heartOnOff);
   };
 
   useEffect(() => {
@@ -47,13 +81,13 @@ function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnO
 
   useEffect(() => {
     // Check if the modal is closing
-    if (!toggleModal) {
+    return () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.destroy();
         mapInstanceRef.current = null;
       }
     }
-  }, [toggleModal]);
+  }, []);
 
 
   useEffect(() => {
@@ -129,14 +163,12 @@ function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnO
     }
   };
   
-  
-  
 
-    return (
+    return isModalOpen?(
     <div className={styles.modalBackdrop}>
       <div className={styles.modal}>
         {/* 상단 바 */}
-        <span className={styles.closeButton} onClick={toggleModal}>
+        <span className={styles.closeButton} onClick={handleCloseModal}>
               &times;
             </span>
             <span className={styles.shareButton}>
@@ -177,7 +209,7 @@ function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnO
         <div ref={mapElement} className={styles.mapLayout}  onClick={handleMapClick}/>
       </div>
       </div>
-  );
+  ):null;
 }
 
 export default CafeModal;

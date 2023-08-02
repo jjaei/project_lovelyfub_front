@@ -9,6 +9,7 @@ function Header() {
   const movePage = useNavigate();
   const [modalState, setModalState] = useState(false);
   const { isLoggedIn, setIsLoggedIn, userData, setUserData } = useContext(LoginContext);
+  const [isUserPage, setIsUserPage] = useState(false);
 
   useEffect(() => {
     checkLoginStatus();
@@ -88,7 +89,10 @@ function Header() {
   // 추가: 유저 페이지로 이동
   function handleUserPageClick() {
     movePage('/user/mypage');
+    setIsUserPage(true);
   }
+
+  const orangeUserIcon = styles.userIconOrange
 
   return (
     <header className={styles.header}>
@@ -100,7 +104,7 @@ function Header() {
         <nav className={styles.navigation}>
           <ul>
             {isLoggedIn ? (
-              <span onClick={handleUserPageClick}>
+              <span onClick={handleUserPageClick} className={isUserPage ? orangeUserIcon : ''}>
                 {/* 로그인이 성공한 경우 사람 아이콘을 표시하고, 클릭 시 유저페이지로 이동합니다. */}
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
                   <path d="M18.2157 14.5002C19.4578 14.5002 20.4646 15.507 20.4646 16.7491V17.3245C20.4646 18.2188 20.145 19.0836 19.5635 19.763C17.9941 21.5965 15.6069 22.5013 12.4616 22.5013C9.31574 22.5013 6.92973 21.5962 5.36343 19.7619C4.78366 19.083 4.46515 18.2195 4.46515 17.3267V16.7491C4.46515 15.507 5.472 14.5002 6.71402 14.5002H18.2157ZM18.2157 16.0002H6.71402C6.30043 16.0002 5.96515 16.3355 5.96515 16.7491V17.3267C5.96515 17.8624 6.15626 18.3805 6.50411 18.7878C7.75742 20.2555 9.7233 21.0013 12.4616 21.0013C15.1999 21.0013 17.1675 20.2555 18.4239 18.7876C18.7729 18.3799 18.9646 17.861 18.9646 17.3245V16.7491C18.9646 16.3355 18.6293 16.0002 18.2157 16.0002ZM12.4616 2.50488C15.223 2.50488 17.4616 4.74346 17.4616 7.50488C17.4616 10.2663 15.223 12.5049 12.4616 12.5049C9.70018 12.5049 7.4616 10.2663 7.4616 7.50488C7.4616 4.74346 9.70018 2.50488 12.4616 2.50488ZM12.4616 4.00488C10.5286 4.00488 8.9616 5.57189 8.9616 7.50488C8.9616 9.43788 10.5286 11.0049 12.4616 11.0049C14.3946 11.0049 15.9616 9.43788 15.9616 7.50488C15.9616 5.57189 14.3946 4.00488 12.4616 4.00488Z" fill="#101010"/>
