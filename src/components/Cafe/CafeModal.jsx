@@ -5,17 +5,25 @@ function CafeModal({ closeModal, mapInstance,  cafe, isModalOpen }) {
   const mapElement = useRef(null);
   const mapInstanceRef = useRef(null); // Separate ref for the map instance
   const [heartOnOff, setHeartOnOff] = useState(false);
-  const [wishCount, setWishCount] = useState(808);
   const [userLocation, setUserLocation] = useState(null);
   const [modalImage, setModalImage] = useState("");
+  const [heartStates, setHeartStates] = useState({});
 
-  // Function to toggle the heart icon state
-  const heartOnOffHandler = () => {
-    toggleHeart();
-    const storeId = cafe.storeid;
+  const handleCloseModal = () => {
+    closeModal();
+  }
 
-    if (!heartOnOff) {
-      setWishCount(wishCount +1)
+  const toggleHeart = () => {
+    const cafeId = cafe?.id;
+    if (!cafeId) return; // cafeId가 유효한지 확인
+
+    setHeartStates((prevHeartStates) => {
+      const updatedHeartStates = { ...prevHeartStates };
+      updatedHeartStates[cafeId] = !heartStates[cafeId];
+      return updatedHeartStates;
+    });
+
+    if (!heartStates[cafeId]) {
       fetch("http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/likes", {
         method: "POST",
         headers : {
@@ -23,27 +31,18 @@ function CafeModal({ closeModal, mapInstance,  cafe, isModalOpen }) {
         },
         body: JSON.stringify({
           userid: 2,
-          storeid: storeId, 
+          cafeId, 
         })
       })
-    } else if (heartOnOff) {
-      setWishCount(wishCount -1)
-      fetch(`http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/likes/2/${storeId}`, {
+    } else {
+      fetch(`http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/likes/2/${cafeId}`, {
         method: "DELETE", 
         body: JSON.stringify({
           user_id: 2,
-          product_id: storeId,
+          cafeId,
         }),
       });
     }
-  };
-
-  const handleCloseModal = () => {
-    closeModal();
-  }
-
-  const toggleHeart = () => {
-    setHeartOnOff(!heartOnOff);
   };
 
   useEffect(() => {
@@ -146,6 +145,12 @@ function CafeModal({ closeModal, mapInstance,  cafe, isModalOpen }) {
     }
   }, [cafe]);
 
+  const handleHeartIcon = heartStates[cafe?.id] ?(<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <path d="M12.8199 5.57912L11.9992 6.40163L11.1759 5.57838C9.07688 3.47931 5.67361 3.47931 3.57455 5.57838C1.47548 7.67744 1.47548 11.0807 3.57455 13.1798L11.4699 21.0751C11.7628 21.368 12.2377 21.368 12.5306 21.0751L20.432 13.1783C22.5264 11.0723 22.53 7.67857 20.4306 5.57912C18.3277 3.47623 14.9228 3.47623 12.8199 5.57912Z" fill="#FF6F3C"/>
+  </svg>):(<svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+  <path d="M13.5686 5.57912L12.7479 6.40163L11.9246 5.57838C9.82561 3.47931 6.42234 3.47931 4.32328 5.57838C2.22421 7.67744 2.22421 11.0807 4.32328 13.1798L12.2186 21.0751C12.5115 21.368 12.9864 21.368 13.2793 21.0751L21.1807 13.1783C23.2751 11.0723 23.2787 7.67857 21.1793 5.57912C19.0764 3.47623 15.6715 3.47623 13.5686 5.57912ZM20.1171 12.1206L12.7489 19.4842L5.38394 12.1191C3.87065 10.6058 3.87065 8.15232 5.38394 6.63904C6.89722 5.12575 9.35073 5.12575 10.864 6.63904L12.2214 7.99648C12.5193 8.29435 13.004 8.28854 13.2946 7.98363L14.6293 6.63978C16.1464 5.12268 18.6015 5.12268 20.1186 6.63978C21.6323 8.15343 21.6297 10.5997 20.1171 12.1206Z" fill="#313131"/>
+  </svg>);
+
   const handleMapClick = () => {
     if (cafe) {
       const cafeLocation = new window.naver.maps.LatLng(cafe.latitude, cafe.longitude);
@@ -176,13 +181,8 @@ function CafeModal({ closeModal, mapInstance,  cafe, isModalOpen }) {
               <path d="M17.8405 3C19.4467 3 20.7487 4.34258 20.7487 5.99872C20.7487 7.65487 19.4467 8.99743 17.8405 8.99743C17.0235 8.99743 16.2853 8.65011 15.757 8.09085L10.4635 11.2111C10.5298 11.4625 10.5651 11.727 10.5651 12C10.5651 12.273 10.5298 12.5375 10.4635 12.7888L15.7578 15.9084C16.2859 15.3496 17.0239 15.0026 17.8405 15.0026C19.4467 15.0026 20.7487 16.3451 20.7487 18.0013C20.7487 19.6574 19.4467 21 17.8405 21C16.2343 21 14.9323 19.6574 14.9323 18.0013C14.9323 17.7283 14.9677 17.4637 15.034 17.2124L9.74043 14.0921C9.21216 14.6513 8.47389 14.9987 7.65694 14.9987C6.05078 14.9987 4.74873 13.6561 4.74873 12C4.74873 10.3438 6.05078 9.00128 7.65694 9.00128C8.47352 9.00128 9.2115 9.34831 9.73973 9.90713L15.034 6.7876C14.9677 6.53624 14.9323 6.27174 14.9323 5.99872C14.9323 4.34258 16.2343 3 17.8405 3Z" fill="#313131"/>
               </svg>
             </span>
-            <span onClick={heartOnOffHandler} className={styles.heart}>
-                {heartOnOff ? (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M12.8199 5.57912L11.9992 6.40163L11.1759 5.57838C9.07688 3.47931 5.67361 3.47931 3.57455 5.57838C1.47548 7.67744 1.47548 11.0807 3.57455 13.1798L11.4699 21.0751C11.7628 21.368 12.2377 21.368 12.5306 21.0751L20.432 13.1783C22.5264 11.0723 22.53 7.67857 20.4306 5.57912C18.3277 3.47623 14.9228 3.47623 12.8199 5.57912Z" fill="#FF6F3C"/>
-                  </svg>):(<svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
-                  <path d="M13.5686 5.57912L12.7479 6.40163L11.9246 5.57838C9.82561 3.47931 6.42234 3.47931 4.32328 5.57838C2.22421 7.67744 2.22421 11.0807 4.32328 13.1798L12.2186 21.0751C12.5115 21.368 12.9864 21.368 13.2793 21.0751L21.1807 13.1783C23.2751 11.0723 23.2787 7.67857 21.1793 5.57912C19.0764 3.47623 15.6715 3.47623 13.5686 5.57912ZM20.1171 12.1206L12.7489 19.4842L5.38394 12.1191C3.87065 10.6058 3.87065 8.15232 5.38394 6.63904C6.89722 5.12575 9.35073 5.12575 10.864 6.63904L12.2214 7.99648C12.5193 8.29435 13.004 8.28854 13.2946 7.98363L14.6293 6.63978C16.1464 5.12268 18.6015 5.12268 20.1186 6.63978C21.6323 8.15343 21.6297 10.5997 20.1171 12.1206Z" fill="#313131"/>
-                  </svg>
-                )}
+            <span onClick={toggleHeart} className={styles.heart}>
+                {handleHeartIcon} 
             </span>
 
         {/*모달창 내용*/}
