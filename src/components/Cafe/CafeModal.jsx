@@ -8,6 +8,7 @@ function CafeModal({ closeModal, mapInstance,  cafe, isModalOpen, heartOnOff, se
   const [wishCount, setWishCount] = useState(808);
   const [userLocation, setUserLocation] = useState(null);
   const [modalImage, setModalImage] = useState("");
+  const [likeStores, setLikeStores] = useState([]);
 
   // Function to toggle the heart icon state
   const heartOnOffHandler = () => {
@@ -37,6 +38,30 @@ function CafeModal({ closeModal, mapInstance,  cafe, isModalOpen, heartOnOff, se
       });
     }
   };
+
+  useEffect(() => {
+    // 사용자의 찜 목록 가져오기
+    fetch("http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/mypage?userid=2&email=kde2329@naver.com")
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.likeStores && data.likeStores.length > 0) {
+          // 찜한 가게 목록 설정
+          setLikeStores(data.likeStores);
+
+          // 현재 가게가 찜 목록에 있는지 여부 확인
+          const isLiked = data.likeStores.some((likedStore) => likedStore.storeid === cafe.storeid);
+          setHeartOnOff(isLiked);
+        } else {
+          setLikeStores([]);
+          setHeartOnOff(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching likeStores:", error);
+        setLikeStores([]);
+        setHeartOnOff(false);
+      });
+  }, [cafe]);
 
   const handleCloseModal = () => {
     closeModal();

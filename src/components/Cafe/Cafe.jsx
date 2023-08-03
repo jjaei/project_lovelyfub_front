@@ -13,11 +13,6 @@ function Cafe() {
   const [selectedCafe, setSelectedCafe] = useState(null);
   const [heartOnOff, setHeartOnOff] =useState(false);
 
-  {/*const toggleModal = (cafe) => {
-    setSelectedCafe(cafe);
-    setIsModalOpen(!isModalOpen);
-  };*/}
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
