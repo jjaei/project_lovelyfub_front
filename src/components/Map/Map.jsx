@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from './Map.module.scss';
 import MapList from "./MapList";
 import axios from "axios";
-import MapModal from "./MapModal";
+import CafeModal from "../Cafe/CafeModal";
 
 function Map() {
   const mapElement = useRef(null);
   const { naver } = window;
 
   const [myLocation] = useState({
-    latitude: 37.6702,
-    longitude: 126.781
+    latitude: 37.5152,
+    longitude: 126.9385
   });
 
   const [restaurantList, setRestaurantList] = useState([]);
@@ -19,13 +19,13 @@ function Map() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const mapInstance = useRef(null);
 
-  const toggleModal = (restaurant) => {
-    setSelectedRestaurant(restaurant);
-    setIsModalOpen(!isModalOpen);
-  };
 
-  const toggleHeart = () => {
-    setHeartOnOff(!heartOnOff);
+  function handleOpenCafeModal(restaurant) {
+    setSelectedRestaurant(restaurant); // 선택된 가게 정보를 상태 변수에 저장하여 모달을 엽니다.
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   const handleMarkerClick = (cafeId) => {
@@ -121,13 +121,13 @@ function Map() {
       <div ref={mapElement} className={styles.layout} />
       <MapList restaurantList={restaurantList} />
       {isModalOpen && (
-        <MapModal
-          closeModal={toggleModal}
-          mapInstance={mapInstance}
+        <CafeModal
           cafe={selectedRestaurant}
-          toggleHeart={toggleHeart}
+          closeModal={() => setIsModalOpen(false)}
+          mapInstance={null}
+          isModalOpen={true}
           heartOnOff={heartOnOff}
-          toggleModal={toggleModal}
+          setHeartOnOff={setHeartOnOff}
         />
       )}
       

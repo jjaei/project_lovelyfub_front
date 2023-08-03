@@ -9,6 +9,7 @@ function User() {
     const [userInfo, setUserInfo] = useState(null);
     const [likeStores, setLikeStores] = useState([]);
     const [selectedCafe, setSelectedCafe] = useState(null);
+    const [heartOnOff, setHeartOnOff] = useState(false);
 
   // 함수 추가
   function handleOpenCafeModal(cafe) {
@@ -40,7 +41,7 @@ function User() {
 
     async function fetchUserInfo() {
         try {
-          const userApiUrl = "http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/mypage";
+          const userApiUrl = "http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/mypage?userid=2&email=kde2329@naver.com";
           const response = await fetch(userApiUrl, {
             method: "GET",
             credentials: "include",
@@ -92,10 +93,13 @@ function User() {
                     <div className={styles.wishTitle}>내가 찜한 착한 가게</div>
                 </div>
                 {likeStores && likeStores.length > 0 ? (
-                    <div className={styles.wishList}>
+                    <div className={styles.cafeContainer}>
                     {likeStores.map((store) => (
-                      <div key={store.storeid} className={styles.wishItem} onClick={() => handleOpenCafeModal(store)}>
+                      <div key={store.storeid} className={styles.cafeList} onClick={() => handleOpenCafeModal(store)}>
                         {/* 찜한 가게 정보 표시 (이미지, 이름 등) */}
+                        <img src={`/푸드리퍼브 가게 프로필/${store.profile}`} className={styles.productImage} />
+                        <div className={styles.productTitle}>{store.name}</div>
+                        <div className={styles.productText}>{store.introduction}</div>
                       </div>
                     ))}
                   </div>
@@ -114,6 +118,8 @@ function User() {
                 closeModal={() => setSelectedCafe(null)}
                 mapInstance={null}
                 isModalOpen={true}
+                heartOnOff={heartOnOff}
+                setHeartOnOff={setHeartOnOff}
                 />
             )}
         </div>

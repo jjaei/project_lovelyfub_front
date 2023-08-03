@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./MapList.module.scss";
-import MapModal from "./MapModal";
+import CafeModal from "../Cafe/CafeModal";
 import axios from "axios";
 
 function MapList({ restaurantList }) {
@@ -62,14 +62,14 @@ function MapList({ restaurantList }) {
       )}
   
       {isModalOpen && (
-        <MapModal
-        closeModal={toggleModal}
-        mapInstance={mapInstance}
-        toggleModal={toggleModal}
-        heartOnOff={heartOnOff}
-        toggleHeart={toggleHeart}
+        <CafeModal
         cafe={selectedRestaurant}
-        />
+        closeModal={() => setIsModalOpen(false)}
+        mapInstance={null}
+        isModalOpen={true}
+        heartOnOff={heartOnOff}
+        setHeartOnOff={setHeartOnOff}
+      />
       )}
     </div>
   );

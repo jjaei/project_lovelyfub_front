@@ -11,6 +11,7 @@ function Cafe() {
   const mapElement = useRef(null);
   const mapInstance = useRef(null);
   const [selectedCafe, setSelectedCafe] = useState(null);
+  const [heartOnOff, setHeartOnOff] =useState(false);
 
   {/*const toggleModal = (cafe) => {
     setSelectedCafe(cafe);
@@ -120,12 +121,12 @@ function Cafe() {
 
       {isModalOpen && (
         <CafeModal
-          //closeModal={toggleModal}
           closeModal={handleCloseModal}
           mapInstance={mapInstance}
-          //toggleModal={toggleModal}
           cafe={selectedCafe}
           isModalOpen = {isModalOpen}
+          heartOnOff={heartOnOff}
+          setHeartOnOff={setHeartOnOff}
         />
       )}
     </div>

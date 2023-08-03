@@ -149,13 +149,10 @@ function MarketModal({ closeModal, mapInstance, market, isModalOpen }) {
 
   const handleMapClick = () => {
     if (market) {
-      const cafeLocation = new window.naver.maps.LatLng(market.latitude, market.longitude);
+      const { latitude, longitude } = market;
   
-      // 도착지를 카페 위치로 지정
-      const destinationPosition = `${cafeLocation.lng()},${cafeLocation.lat()}`;
-  
-      // Naver Map의 길찾기 서비스를 위한 URL 생성
-      const naverMapURL = `https://m.map.naver.com/directions/?sposition=&dposition=${destinationPosition}&dlevel=13`;
+      // 새로운 탭을 열기 위한 URL 생성
+      const naverMapURL = `https://map.naver.com/?mapMode=0&lat=${latitude}&lng=${longitude}&pinTitle=${encodeURIComponent(market.name)}`;
   
       // URL을 새 탭에서 열기
       window.open(naverMapURL, "_blank");
@@ -163,9 +160,6 @@ function MarketModal({ closeModal, mapInstance, market, isModalOpen }) {
       alert("카페 위치를 가져올 수 없습니다.");
     }
   };
-  
-  
-  
 
     return (
     <div className={styles.modalBackdrop}>
@@ -173,11 +167,6 @@ function MarketModal({ closeModal, mapInstance, market, isModalOpen }) {
         {/* 상단 바 */}
         <span className={styles.closeButton} onClick={handleCloseModal}>
               &times;
-            </span>
-            <span className={styles.shareButton}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
-              <path d="M17.8405 3C19.4467 3 20.7487 4.34258 20.7487 5.99872C20.7487 7.65487 19.4467 8.99743 17.8405 8.99743C17.0235 8.99743 16.2853 8.65011 15.757 8.09085L10.4635 11.2111C10.5298 11.4625 10.5651 11.727 10.5651 12C10.5651 12.273 10.5298 12.5375 10.4635 12.7888L15.7578 15.9084C16.2859 15.3496 17.0239 15.0026 17.8405 15.0026C19.4467 15.0026 20.7487 16.3451 20.7487 18.0013C20.7487 19.6574 19.4467 21 17.8405 21C16.2343 21 14.9323 19.6574 14.9323 18.0013C14.9323 17.7283 14.9677 17.4637 15.034 17.2124L9.74043 14.0921C9.21216 14.6513 8.47389 14.9987 7.65694 14.9987C6.05078 14.9987 4.74873 13.6561 4.74873 12C4.74873 10.3438 6.05078 9.00128 7.65694 9.00128C8.47352 9.00128 9.2115 9.34831 9.73973 9.90713L15.034 6.7876C14.9677 6.53624 14.9323 6.27174 14.9323 5.99872C14.9323 4.34258 16.2343 3 17.8405 3Z" fill="#313131"/>
-              </svg>
             </span>
             <span onClick={heartOnOffHandler} className={styles.heart}>
                 {heartOnOff ? (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">

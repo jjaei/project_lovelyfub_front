@@ -45,6 +45,25 @@ function MarketModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartO
     };
   }, []);
 
+  const handleShareClick = () => {
+    const address = cafe?.address; // 가게의 주소를 가져옵니다.
+  
+    // 주소가 유효한 경우에만 클립보드에 복사합니다.
+    if (address) {
+      // 임시로 textarea 엘리먼트를 생성하여 클립보드에 복사합니다.
+      const textarea = document.createElement("textarea");
+      textarea.value = address;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+  
+      alert("가게 주소가 복사되었습니다!");
+    } else {
+      alert("가게 주소를 가져올 수 없습니다.");
+    }
+  };
+
   useEffect(() => {
     // Check if the modal is closing
     if (!toggleModal) {
@@ -139,7 +158,7 @@ function MarketModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartO
         <span className={styles.closeButton} onClick={toggleModal}>
               &times;
             </span>
-            <span className={styles.shareButton}>
+            <span className={styles.shareButton} onClick={handleShareClick}>
               <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
               <path d="M17.8405 3C19.4467 3 20.7487 4.34258 20.7487 5.99872C20.7487 7.65487 19.4467 8.99743 17.8405 8.99743C17.0235 8.99743 16.2853 8.65011 15.757 8.09085L10.4635 11.2111C10.5298 11.4625 10.5651 11.727 10.5651 12C10.5651 12.273 10.5298 12.5375 10.4635 12.7888L15.7578 15.9084C16.2859 15.3496 17.0239 15.0026 17.8405 15.0026C19.4467 15.0026 20.7487 16.3451 20.7487 18.0013C20.7487 19.6574 19.4467 21 17.8405 21C16.2343 21 14.9323 19.6574 14.9323 18.0013C14.9323 17.7283 14.9677 17.4637 15.034 17.2124L9.74043 14.0921C9.21216 14.6513 8.47389 14.9987 7.65694 14.9987C6.05078 14.9987 4.74873 13.6561 4.74873 12C4.74873 10.3438 6.05078 9.00128 7.65694 9.00128C8.47352 9.00128 9.2115 9.34831 9.73973 9.90713L15.034 6.7876C14.9677 6.53624 14.9323 6.27174 14.9323 5.99872C14.9323 4.34258 16.2343 3 17.8405 3Z" fill="#313131"/>
               </svg>
