@@ -4,7 +4,6 @@ import styles from './Menu.module.scss'
 const Menu = () => {
     const location = useLocation();
 
-
     return (
         <header>
             <div className={styles.menubar}>
