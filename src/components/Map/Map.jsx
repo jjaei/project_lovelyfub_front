@@ -9,8 +9,8 @@ function Map() {
   const { naver } = window;
 
   const [myLocation] = useState({
-    latitude: 37.5152,
-    longitude: 126.9385
+    latitude: 37.512157,
+    longitude: 126.926690
   });
 
   const [restaurantList, setRestaurantList] = useState([]);
