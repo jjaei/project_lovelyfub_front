@@ -8,6 +8,7 @@ import Marketpage from './pages/Marketpage'
 import Cafepage from './pages/Cafepage'
 import Mappage from './pages/Mappage';
 import Userpage from './pages/Userpage'
+import OAuthRedirect from './pages/OAuthRedirect';
 
 function App() {
   return (
@@ -20,7 +21,8 @@ function App() {
             <Route path='/market' element={<Marketpage/>}/>
             <Route path='/cafe' element={<Cafepage/>}/>
             <Route path='/map' element={<Mappage/>}/>
-            <Route path='/user/mypage' element={<Userpage/>}>
+            <Route path='/user/mypage' element={<Userpage/>}/>
+            <Route path='/oauth/redirect' element={<OAuthRedirect/>} >
             </Route>
           </Routes>
         </LoginProvider>
