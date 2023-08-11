@@ -7,12 +7,7 @@ import CafeModal from "../Cafe/CafeModal";
 function Map() {
   const mapElement = useRef(null);
   const { naver } = window;
-
-  const [myLocation] = useState({
-    latitude: 37.512157,
-    longitude: 126.926690
-  });
-
+  const [myLocation, setMyLocation] = useState(null);
   const [restaurantList, setRestaurantList] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [heartOnOff, setHeartOnOff] = useState(false);
@@ -28,6 +23,28 @@ function Map() {
     setIsModalOpen(false);
   };
 
+  useEffect(() => {
+    // 위치 정보를 받아오는 비동기 함수
+    const fetchMyLocation = async () => {
+      try {
+        const position = await new Promise((resolve, reject) => {
+          // 위치 정보를 가져오는 브라우저 API를 이용
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+
+        setMyLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      } catch (error) {
+        console.error("Error fetching current location:", error);
+        // 오류 처리 로직 추가
+      }
+    };
+
+    fetchMyLocation();
+  }, []);
+
   const handleMarkerClick = (cafeId) => {
     axios
       .get(`http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/store/${cafeId}`)
@@ -41,7 +58,6 @@ function Map() {
   useEffect(() => {
     if (myLocation&&mapElement.current) {
       const currentPosition = [myLocation.latitude, myLocation.longitude];
-
       const map = new naver.maps.Map(mapElement.current, {
         center: new naver.maps.LatLng(currentPosition[0], currentPosition[1]),
         zoomControl: false, minZoom: 15, maxZoom: 20,
@@ -63,7 +79,7 @@ function Map() {
 
       fetchRestaurants(myLocation.latitude, myLocation.longitude, map);
     }
-  }, []);
+  }, [myLocation]);
 
   const fetchRestaurants = async (latitude, longitude, map) => {
     try {

@@ -9,23 +9,26 @@ import Cafepage from './pages/Cafepage'
 import Mappage from './pages/Mappage';
 import Userpage from './pages/Userpage'
 import OAuthRedirect from './pages/OAuthRedirect';
+import { UserDataProvider } from './components/User/UserDataContext';
 
 function App() {
   return (
     <div className="App">
       <Router basename={process.env.PUBLIC_URL}>
-        <LoginProvider>
-          <Header />
-          <Routes>
-            <Route path='/main' element={<Mainpage/>} />
-            <Route path='/market' element={<Marketpage/>}/>
-            <Route path='/cafe' element={<Cafepage/>}/>
-            <Route path='/map' element={<Mappage/>}/>
-            <Route path='/user/mypage' element={<Userpage/>}/>
-            <Route path='/oauth/redirect' element={<OAuthRedirect/>} >
-            </Route>
-          </Routes>
-        </LoginProvider>
+        <UserDataProvider>
+          <LoginProvider>
+            <Header />
+            <Routes>
+              <Route path='/main' element={<Mainpage/>} />
+              <Route path='/market' element={<Marketpage/>}/>
+              <Route path='/cafe' element={<Cafepage/>}/>
+              <Route path='/map' element={<Mappage/>}/>
+              <Route path='/user/mypage' element={<Userpage/>}/>
+              <Route path='/oauth/redirect' element={<OAuthRedirect/>} >
+              </Route>
+            </Routes>
+          </LoginProvider>
+        </UserDataProvider>
       </Router>
     </div>
   );

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import CafeModal from "../Cafe/CafeModal";
 
 
-function User() {
+function User({userData}) {
     const navigate = useNavigate();
     const [userInfo, setUserInfo] = useState(null);
     const [likeStores, setLikeStores] = useState([]);
@@ -20,28 +20,9 @@ function User() {
         fetchUserInfo();
     }, []);
 
-    {/*async function fetchUserInfo() {
-        try {
-            const userApiUrl = "http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/user";
-            const response = await fetch(userApiUrl, {
-                method: "GET",
-                credentials: "include",
-            });
-
-            if (!response.ok) {
-                throw new Error("사용자 정보를 가져오는데 실패했습니다.");
-            }
-
-            const data = await response.json();
-            setUserInfo(data);
-        } catch (error) {
-            console.error("오류가 발생했습니다.", error);
-        }
-    }*/}
-
     async function fetchUserInfo() {
         try {
-          const userApiUrl = "http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/mypage?userid=2&email=kde2329@naver.com";
+          const userApiUrl = `http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/mypage?userid=${userData.id}&email=${userData.email}`;
           const response = await fetch(userApiUrl, {
             method: "GET",
             credentials: "include",
@@ -80,8 +61,8 @@ function User() {
                         </defs>
                     </svg>
                     <div className={styles.userInfo}>
-                        <div className={styles.nickname}>김다은</div>
-                        <div className={styles.email}>kde2329@naver.com</div>
+                        <div className={styles.nickname}>{userData.name}</div>
+                        <div className={styles.email}>{userData.email}</div>
                     </div>
                 </div>
 
