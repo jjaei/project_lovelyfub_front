@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./Market.module.scss";
+import { useUserData } from "../User/UserDataContext";
 
 function MarketModal({ closeModal, mapInstance, market, isModalOpen }) {
   const mapElement = useRef(null);
@@ -9,6 +10,14 @@ function MarketModal({ closeModal, mapInstance, market, isModalOpen }) {
   const [userLocation, setUserLocation] = useState(null);
   const [modalImage, setModalImage] = useState("");
   const [likeStores, setLikeStores] = useState([]);
+  const { userData } = useUserData();
+
+  useEffect(() => {
+    if (userData) {
+      const userId = userData.id;
+      const userEmail = userData.email;
+    }
+  }, [userData]);
 
   // Function to toggle the heart icon state
   const heartOnOffHandler = () => {
@@ -29,7 +38,7 @@ function MarketModal({ closeModal, mapInstance, market, isModalOpen }) {
       })
     } else if (heartOnOff) {
       setWishCount(wishCount -1)
-      fetch(`http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/likes/2/${storeId}`, {
+      fetch(`http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/likes/${userData.id}/${storeId}`, {
         method: "DELETE", 
         body: JSON.stringify({
           user_id: 2,
@@ -122,7 +131,21 @@ function MarketModal({ closeModal, mapInstance, market, isModalOpen }) {
 
   useEffect(() => {
     // 사용자의 찜 목록 가져오기
-    fetch("http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/mypage?userid=2&email=kde2329@naver.com")
+    let accessToken ='';
+      const cookies = document.cookie.split(';');
+      for(let i =0; i< cookies.length; i++){
+        if(cookies[i].includes('AccessToken')){
+          accessToken = cookies[i].replace('AccessToken=', '');
+        }
+      }
+
+    fetch("http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/mypage", { 
+      method: "GET",
+      headers: {
+        Authorization: `${accessToken}`,
+      },
+    })
+
       .then((response) => response.json())
       .then((data) => {
         if (data.likeStores && data.likeStores.length > 0) {

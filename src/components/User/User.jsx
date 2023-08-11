@@ -22,10 +22,19 @@ function User({userData}) {
 
     async function fetchUserInfo() {
         try {
-          const userApiUrl = `http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/mypage?userid=${userData.id}&email=${userData.email}`;
+          let accessToken ='';
+          const cookies = document.cookie.split(';');
+          for(let i =0; i< cookies.length; i++){
+            if(cookies[i].includes('AccessToken')){
+              accessToken = cookies[i].replace('AccessToken=', '');
+            }
+          }
+          const userApiUrl = `http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/mypage`;
           const response = await fetch(userApiUrl, {
             method: "GET",
-            credentials: "include",
+            headers: {
+              Authorization: `${accessToken}`,
+            },
           });
       
           if (!response.ok) {

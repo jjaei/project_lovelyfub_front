@@ -105,16 +105,6 @@ function Header() {
                 <Modal setModalState={setModalState} onLoginSuccess={handleLoginSuccess} />
               </div>
             )}
-
-            {/* userData에 유저 정보가 있는 경우에만 표시 */}
-            {userData && (
-              <div>
-                <div>{userData.name}</div>
-                <div>{userData.nickname}</div>
-                <div>{userData.id}</div>
-                <div>{userData.email}</div>
-              </div>
-            )}
           </ul>
         </nav>
       </div>
