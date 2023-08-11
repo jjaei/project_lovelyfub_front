@@ -5,7 +5,6 @@ import axios from "axios";
 
 function Market() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [heartOnOff, setHeartOnOff] = useState(false);
   const [market, setMarket] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
 
@@ -15,13 +14,8 @@ function Market() {
   const [selectedMarket, setSelectedMarket] = useState(null);
 
 
-  const toggleModal = (market) => {
-    setSelectedMarket(market);
-    setIsModalOpen(!isModalOpen);
-  };
-
-  const toggleHeart = () => {
-    setHeartOnOff(!heartOnOff);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -124,12 +118,10 @@ function Market() {
 
       {isModalOpen && (
         <MarketModal
-          closeModal={toggleModal}
+          closeModal={handleCloseModal}
           mapInstance={mapInstance}
-          toggleModal={toggleModal}
-          heartOnOff={heartOnOff}
-          toggleHeart={toggleHeart}
           market={selectedMarket}
+          isModalOpen = {isModalOpen}
         />
       )}
     </div>

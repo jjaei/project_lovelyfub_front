@@ -1,15 +1,96 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./Cafe.module.scss";
+import { useUserData } from "../User/UserDataContext";
 
-function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnOff, cafe }) {
+function CafeModal({ closeModal, mapInstance,  cafe, isModalOpen, heartOnOff, setHeartOnOff }) {
   const mapElement = useRef(null);
   const mapInstanceRef = useRef(null); // Separate ref for the map instance
+  //const [heartOnOff, setHeartOnOff] = useState(false);
+  const [wishCount, setWishCount] = useState(808);
   const [userLocation, setUserLocation] = useState(null);
   const [modalImage, setModalImage] = useState("");
+  const [likeStores, setLikeStores] = useState([]);
+  const { userData } = useUserData();
+
+  useEffect(() => {
+    if (userData) {
+      const userId = userData.id;
+      const userEmail = userData.email;
+    }
+  }, [userData]);
 
   // Function to toggle the heart icon state
   const heartOnOffHandler = () => {
     toggleHeart();
+    const storeId = cafe.storeid;
+
+    if (!heartOnOff) {
+      setWishCount(wishCount +1)
+      fetch("http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/likes", {
+        method: "POST",
+        headers : {
+          "Content-Type" : "application/json",
+        },
+        body: JSON.stringify({
+          userid: 2,
+          storeid: storeId, 
+        })
+      })
+    } else if (heartOnOff) {
+      setWishCount(wishCount -1)
+      fetch(`http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/likes/${userData.id}/${storeId}`, {
+        method: "DELETE", 
+        body: JSON.stringify({
+          user_id: 2,
+          product_id: storeId,
+        }),
+      });
+    }
+  };
+
+  useEffect(() => {
+    // 사용자의 찜 목록 가져오기
+    let accessToken ='';
+      const cookies = document.cookie.split(';');
+      for(let i =0; i< cookies.length; i++){
+        if(cookies[i].includes('AccessToken')){
+          accessToken = cookies[i].replace('AccessToken=', '');
+        }
+      }
+
+    fetch("http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/mypage", { 
+      method: "GET",
+      headers: {
+        Authorization: `${accessToken}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.likeStores && data.likeStores.length > 0) {
+          // 찜한 가게 목록 설정
+          setLikeStores(data.likeStores);
+
+          // 현재 가게가 찜 목록에 있는지 여부 확인
+          const isLiked = data.likeStores.some((likedStore) => likedStore.storeid === cafe.storeid);
+          setHeartOnOff(isLiked);
+        } else {
+          setLikeStores([]);
+          setHeartOnOff(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching likeStores:", error);
+        setLikeStores([]);
+        setHeartOnOff(false);
+      });
+  }, [cafe]);
+
+  const handleCloseModal = () => {
+    closeModal();
+  }
+
+  const toggleHeart = () => {
+    setHeartOnOff(!heartOnOff);
   };
 
   useEffect(() => {
@@ -47,13 +128,13 @@ function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnO
 
   useEffect(() => {
     // Check if the modal is closing
-    if (!toggleModal) {
+    return () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.destroy();
         mapInstanceRef.current = null;
       }
     }
-  }, [toggleModal]);
+  }, []);
 
 
   useEffect(() => {
@@ -74,6 +155,10 @@ function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnO
       // Handle the case where geolocation is not supported
     }
   }, []);
+
+  useEffect(() => {
+    setHeartOnOff(false);
+  }, [cafe]);
 
   useEffect(() => {
     // cafe 데이터가 유효한 경우에만 실행
@@ -114,13 +199,10 @@ function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnO
 
   const handleMapClick = () => {
     if (cafe) {
-      const cafeLocation = new window.naver.maps.LatLng(cafe.latitude, cafe.longitude);
+      const { latitude, longitude } = cafe;
   
-      // 도착지를 카페 위치로 지정
-      const destinationPosition = `${cafeLocation.lng()},${cafeLocation.lat()}`;
-  
-      // Naver Map의 길찾기 서비스를 위한 URL 생성
-      const naverMapURL = `https://m.map.naver.com/directions/?sposition=&dposition=${destinationPosition}&dlevel=13`;
+      // 새로운 탭을 열기 위한 URL 생성
+      const naverMapURL = `https://map.naver.com/?mapMode=0&lat=${latitude}&lng=${longitude}&pinTitle=${encodeURIComponent(cafe.name)}`;
   
       // URL을 새 탭에서 열기
       window.open(naverMapURL, "_blank");
@@ -129,20 +211,13 @@ function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnO
     }
   };
   
-  
-  
 
-    return (
+    return isModalOpen?(
     <div className={styles.modalBackdrop}>
       <div className={styles.modal}>
         {/* 상단 바 */}
-        <span className={styles.closeButton} onClick={toggleModal}>
+        <span className={styles.closeButton} onClick={handleCloseModal}>
               &times;
-            </span>
-            <span className={styles.shareButton}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
-              <path d="M17.8405 3C19.4467 3 20.7487 4.34258 20.7487 5.99872C20.7487 7.65487 19.4467 8.99743 17.8405 8.99743C17.0235 8.99743 16.2853 8.65011 15.757 8.09085L10.4635 11.2111C10.5298 11.4625 10.5651 11.727 10.5651 12C10.5651 12.273 10.5298 12.5375 10.4635 12.7888L15.7578 15.9084C16.2859 15.3496 17.0239 15.0026 17.8405 15.0026C19.4467 15.0026 20.7487 16.3451 20.7487 18.0013C20.7487 19.6574 19.4467 21 17.8405 21C16.2343 21 14.9323 19.6574 14.9323 18.0013C14.9323 17.7283 14.9677 17.4637 15.034 17.2124L9.74043 14.0921C9.21216 14.6513 8.47389 14.9987 7.65694 14.9987C6.05078 14.9987 4.74873 13.6561 4.74873 12C4.74873 10.3438 6.05078 9.00128 7.65694 9.00128C8.47352 9.00128 9.2115 9.34831 9.73973 9.90713L15.034 6.7876C14.9677 6.53624 14.9323 6.27174 14.9323 5.99872C14.9323 4.34258 16.2343 3 17.8405 3Z" fill="#313131"/>
-              </svg>
             </span>
             <span onClick={heartOnOffHandler} className={styles.heart}>
                 {heartOnOff ? (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -171,13 +246,13 @@ function CafeModal({ closeModal, mapInstance, toggleModal, toggleHeart, heartOnO
               <circle cx="16" cy="8" r="1" fill="white"/>
             </svg>
             <div className={styles.instaLink}>
-            <a href={cafe?.instagram}  target="_blank" rel="noopener noreferrer" >{cafe.instagram}</a></div>
+            <a href={cafe?.instagram}  target="_blank" rel="noopener noreferrer" >{cafe?.instagram}</a></div>
 
         {/*모달창 지도*/}
         <div ref={mapElement} className={styles.mapLayout}  onClick={handleMapClick}/>
       </div>
       </div>
-  );
+  ):null;
 }
 
 export default CafeModal;

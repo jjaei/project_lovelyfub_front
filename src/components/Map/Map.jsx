@@ -2,31 +2,48 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from './Map.module.scss';
 import MapList from "./MapList";
 import axios from "axios";
-import MapModal from "./MapModal";
+import CafeModal from "../Cafe/CafeModal";
 
 function Map() {
   const mapElement = useRef(null);
   const { naver } = window;
-
-  const [myLocation] = useState({
-    latitude: 37.6702,
-    longitude: 126.781
-  });
-
+  const [myLocation, setMyLocation] = useState(null);
   const [restaurantList, setRestaurantList] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [heartOnOff, setHeartOnOff] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const mapInstance = useRef(null);
 
-  const toggleModal = (restaurant) => {
-    setSelectedRestaurant(restaurant);
-    setIsModalOpen(!isModalOpen);
+
+  function handleOpenCafeModal(restaurant) {
+    setSelectedRestaurant(restaurant); // 선택된 가게 정보를 상태 변수에 저장하여 모달을 엽니다.
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
-  const toggleHeart = () => {
-    setHeartOnOff(!heartOnOff);
-  };
+  useEffect(() => {
+    // 위치 정보를 받아오는 비동기 함수
+    const fetchMyLocation = async () => {
+      try {
+        const position = await new Promise((resolve, reject) => {
+          // 위치 정보를 가져오는 브라우저 API를 이용
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+
+        setMyLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      } catch (error) {
+        console.error("Error fetching current location:", error);
+        // 오류 처리 로직 추가
+      }
+    };
+
+    fetchMyLocation();
+  }, []);
 
   const handleMarkerClick = (cafeId) => {
     axios
@@ -41,7 +58,6 @@ function Map() {
   useEffect(() => {
     if (myLocation&&mapElement.current) {
       const currentPosition = [myLocation.latitude, myLocation.longitude];
-
       const map = new naver.maps.Map(mapElement.current, {
         center: new naver.maps.LatLng(currentPosition[0], currentPosition[1]),
         zoomControl: false, minZoom: 15, maxZoom: 20,
@@ -63,7 +79,7 @@ function Map() {
 
       fetchRestaurants(myLocation.latitude, myLocation.longitude, map);
     }
-  }, []);
+  }, [myLocation]);
 
   const fetchRestaurants = async (latitude, longitude, map) => {
     try {
@@ -121,13 +137,13 @@ function Map() {
       <div ref={mapElement} className={styles.layout} />
       <MapList restaurantList={restaurantList} />
       {isModalOpen && (
-        <MapModal
-          closeModal={toggleModal}
-          mapInstance={mapInstance}
+        <CafeModal
           cafe={selectedRestaurant}
-          toggleHeart={toggleHeart}
+          closeModal={() => setIsModalOpen(false)}
+          mapInstance={null}
+          isModalOpen={true}
           heartOnOff={heartOnOff}
-          toggleModal={toggleModal}
+          setHeartOnOff={setHeartOnOff}
         />
       )}
       

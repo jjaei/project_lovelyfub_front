@@ -5,21 +5,16 @@ import axios from "axios";
 
 function Cafe() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [heartOnOff, setHeartOnOff] = useState(false);
   const [cafes, setCafes] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
 
   const mapElement = useRef(null);
   const mapInstance = useRef(null);
   const [selectedCafe, setSelectedCafe] = useState(null);
+  const [heartOnOff, setHeartOnOff] =useState(false);
 
-  const toggleModal = (cafe) => {
-    setSelectedCafe(cafe);
-    setIsModalOpen(!isModalOpen);
-  };
-
-  const toggleHeart = () => {
-    setHeartOnOff(!heartOnOff);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -121,12 +116,12 @@ function Cafe() {
 
       {isModalOpen && (
         <CafeModal
-          closeModal={toggleModal}
+          closeModal={handleCloseModal}
           mapInstance={mapInstance}
-          toggleModal={toggleModal}
-          heartOnOff={heartOnOff}
-          toggleHeart={toggleHeart}
           cafe={selectedCafe}
+          isModalOpen = {isModalOpen}
+          heartOnOff={heartOnOff}
+          setHeartOnOff={setHeartOnOff}
         />
       )}
     </div>

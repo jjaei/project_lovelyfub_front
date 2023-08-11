@@ -1,5 +1,7 @@
 import React, { forwardRef, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from './Modal.module.scss';
+import axios from "axios";
 
 const Modal = forwardRef((props, ref) => {
     let wrapperRef = useRef();
@@ -17,11 +19,11 @@ const Modal = forwardRef((props, ref) => {
         }
     };
 
-    function handleNaverLogin() {
-        // 네이버 로그인 페이지로 이동
-        window.location.href = "http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver";
+    const handleNaverLogin = () => {
+        window.location.href = 'http://ec2-3-39-210-13.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorize/naver?redirect_uri=http://localhost:3000/oauth/redirect';
         props.onLoginSuccess();
     }
+    
 
     return (
         <div ref={wrapperRef}>
